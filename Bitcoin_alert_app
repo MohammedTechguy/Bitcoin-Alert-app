@@ -1,0 +1,38 @@
+import requests
+from bs4 import BeautifulSoup
+from twilio.rest import Client
+
+last_price = 0
+
+def email():
+    account_sid = 'AC98287f02eafc6a659ba5a3176137fef0'
+    auth_token = 'ebbe732abd06b5f4988905b8a57b6d95'
+    client = Client(account_sid, auth_token)
+
+    message = client.messages \
+        .create(
+         body='bitcoin went down '+ str(last_price),
+         from_='+19897154027',
+         to='+14244404455'
+        )
+
+
+def precila():
+    response = requests.get('https://finance.yahoo.com/quote/BTC-USD')
+    soup = BeautifulSoup(response.content, 'html.parser')
+    return soup.find_all("div",{"class":"D(ib) smartphone_Mb(10px) W(70%) W(100%)--mobp smartphone_Mt(6px)"})[0].find("span").text.strip()
+precila()
+
+def maka():
+    global last_price
+    new_price = 0
+    last_price = new_price + 9790
+    while True:
+        price = precila()
+        if price < str(last_price):
+            print('Bitcoin price: $'+ price)
+            email()
+            last_price = price
+        else:
+            continue
+maka()
